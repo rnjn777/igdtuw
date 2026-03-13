@@ -3,8 +3,7 @@ name: Deploy Frontend to GitHub Pages
 on:
   push:
     branches: ["main"]
-    paths:
-      - 'mental-ai-frontend/**' # Only trigger when frontend changes
+  workflow_dispatch:
 
 permissions:
   contents: read
