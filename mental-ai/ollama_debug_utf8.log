@@ -1,0 +1,50 @@
+﻿28aa2b31f
+
+goroutine 12 [running]:
+github.com/ollama/ollam
+a/runner/llamarunner.(*
+Server).loadModel(0xc00
+00d6e60, {{0x0, 0x0, 
+0x0}, 0x0, 0x0, 0x0, 
+{0x0, 0x0, 0x0}, ...}, 
+...)
+	github.com/ollama/olla
+ma/runner/llamarunner/r
+unner.go:843 +0x33f
+created by github.com/o
+llama/ollama/runner/lla
+marunner.(*Server).load
+ in goroutine 9
+	github.com/ollama/olla
+ma/runner/llamarunner/r
+unner.go:934 +0x889
+time=2026-03-13T13:12:1
+7.256+05:30 
+level=ERROR 
+source=server.go:303 
+msg="llama runner 
+terminated" 
+error="exit status 2"
+time=2026-03-13T13:12:1
+7.376+05:30 level=INFO 
+source=sched.go:516 
+msg="Load failed" model
+=D:\ollama_models\blobs
+\sha256-f5074b1221da0f5
+a2910d33b642efa5b9eb58c
+fdddca1c79e16d7ad28aa2b
+31f error="llama 
+runner process has 
+terminated: error 
+loading model: unable 
+to allocate CPU buffer\
+nllama_model_load_from_
+file_impl: failed to 
+load model"
+time=2026-03-13T13:12:1
+7.379+05:30 
+level=DEBUG 
+source=server.go:1830 
+msg="stopping llama 
+server" pid=27832
+[GIN] 2026/03/13 - 13:12:17 | 500 |    466.4026ms |       127.0.0.1 | POST     "/api/generate"

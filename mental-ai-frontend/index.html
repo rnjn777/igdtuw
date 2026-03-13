@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindSentry | AI Wellness Assistant</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Ambient Animated Background from Landing Page -->
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div id="onboarding" class="modal-overlay active">
+        <div class="modal-content glass-panel glow-cyan">
+            <div class="orb-container small">
+                <div class="orb orb-calm"></div>
+            </div>
+            <h1 class="sora-font text-gradient">Hi, I'm MindSentry.</h1>
+            <p class="text-muted">Your personal AI mental wellness assistant.</p>
+            
+            <div class="input-group mt-xl">
+                <label for="user-name">What should I call you?</label>
+                <input type="text" id="user-name" placeholder="Enter your name..." autocomplete="off">
+            </div>
+            
+            <button id="start-btn" class="btn btn-primary mt-lg" disabled>Begin Session <i class="ri-arrow-right-line"></i></button>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="app-layout hidden">
+        
+        <!-- Left Sidebar -->
+        <aside class="sidebar glass-panel">
+            <div class="brand">
+                <i class="ri-brain-line glow-icon"></i>
+                <span class="sora-font font-bold">MindSentry</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-view="chat"><i class="ri-chat-3-line"></i> Active Session</a>
+                <a href="#" class="nav-item" data-view="timeline"><i class="ri-bar-chart-box-line"></i> My Timeline</a>
+                <a href="#" class="nav-item" data-view="report"><i class="ri-file-list-3-line"></i> Daily Report</a>
+                <div class="nav-item user-profile mt-auto">
+                    <div class="avatar"><i class="ri-user-smile-line"></i></div>
+                    <span id="display-name">Student</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- VIEW: CHAT -->
+        <div id="view-chat" class="view-layer" style="display: contents;">
+            <!-- Main Chat Area -->
+        <main class="chat-container">
+            <!-- Crisis Banner (Hidden Default) -->
+            <div id="crisis-banner" class="crisis-banner hidden">
+                <i class="ri-alert-fill"></i>
+                <div class="crisis-text">
+                    <strong>You are not alone.</strong> If you're feeling overwhelmed, please reach out. 
+                    <br>Helpline: <strong>9152987821</strong> (iCall) | <strong>1860-2662-345</strong> (Vandrevala)
+                </div>
+                <button id="close-crisis" class="btn-icon"><i class="ri-close-line"></i></button>
+            </div>
+
+            <div class="chat-scroll" id="chat-box">
+                <!-- Hero Section (Replaced by chat history) -->
+                <div id="hero-section" class="hero-section">
+                    <div class="orb-container large">
+                        <div id="main-orb" class="orb orb-calm pulse-anim"></div>
+                    </div>
+                    <h2 class="sora-font text-gradient mb-sm">Welcome back, <span id="hero-name">Student</span>.</h2>
+                    <p class="text-muted mb-xl">How are you feeling about your studies today?</p>
+                    
+                    <div class="prompt-grid">
+                        <button class="prompt-card glass-panel" data-prompt="I'm feeling incredibly anxious about my exams.">
+                            <span class="prompt-icon purple"><i class="ri-windy-line"></i></span>
+                            <div class="prompt-text">
+                                <strong>I'm feeling anxious</strong>
+                                <span>Grounding techniques</span>
+                            </div>
+                        </button>
+                        <button class="prompt-card glass-panel" data-prompt="I am completely exhausted and burnt out.">
+                            <span class="prompt-icon blue"><i class="ri-battery-low-line"></i></span>
+                            <div class="prompt-text">
+                                <strong>I'm burnt out</strong>
+                                <span>Rest & recovery</span>
+                            </div>
+                        </button>
+                        <button class="prompt-card glass-panel" data-prompt="I had a surprisingly great day today.">
+                            <span class="prompt-icon gold"><i class="ri-sun-line"></i></span>
+                            <div class="prompt-text">
+                                <strong>I feel great!</strong>
+                                <span>Track positive moments</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-wrapper glass-panel">
+                <input type="text" id="chat-input" placeholder="What's on your mind? Type here..." autocomplete="off">
+                <button id="send-btn" class="btn-icon send-button"><i class="ri-send-plane-fill"></i></button>
+            </div>
+        </main>
+
+        <!-- Right Analytics Panel -->
+        <aside class="analytics-panel">
+            <h3 class="panel-title sora-font"><i class="ri-dashboard-line"></i> Mental Insight</h3>
+            
+            <!-- Emotion Metric -->
+            <div class="metric-card glass-panel mb-md glow-border">
+                <div class="metric-label">Detected Emotion</div>
+                <div class="metric-value-row">
+                    <div class="metric-value font-bold text-cyan" id="insight-emotion">Reflective</div>
+                    <div class="confidence-badge" id="insight-conf">85%</div>
+                </div>
+                <!-- Mini visualization -->
+                <div class="emotion-bar-container mt-sm">
+                    <div id="emotion-bar" class="emotion-bar bar-cyan" style="width: 85%"></div>
+                </div>
+            </div>
+
+            <!-- Split Metrics -->
+            <div class="split-metrics mb-md">
+                <div class="metric-card glass-panel">
+                    <div class="metric-label">Burnout Risk</div>
+                    <div class="metric-value" id="insight-burnout">Low</div>
+                    <div class="metric-trend trend-good" id="insight-burnout-trend"><i class="ri-arrow-right-down-line"></i> Stable</div>
+                </div>
+                <div class="metric-card glass-panel">
+                    <div class="metric-label">Stress Trend</div>
+                    <div class="metric-value" id="insight-stress">Calm</div>
+                    <div class="metric-trend trend-good" id="insight-stress-trend"><i class="ri-arrow-right-line"></i> Stable</div>
+                </div>
+            </div>
+
+            <!-- Suggested Action -->
+            <div class="action-card glass-panel mb-xl accent-left">
+                <div class="metric-label text-violet"><i class="ri-lightbulb-flash-line"></i> Suggested Activity</div>
+                <div class="action-text mt-xs" id="insight-activity">Maintain your healthy routine and take scheduled study breaks.</div>
+            </div>
+
+            <!-- Mood Timeline Chart -->
+            <h3 class="panel-title sora-font"><i class="ri-line-chart-line"></i> Mood Timeline</h3>
+            <div class="chart-container glass-panel">
+                <canvas id="moodChart"></canvas>
+            </div>
+             <div class="mt-xl">
+                 <button id="generate-report-btn" class="btn btn-outline w-full"><i class="ri-file-download-line"></i> Generate Session Report</button>
+            </div>
+        </aside>
+        </div>
+
+        <!-- VIEW: TIMELINE -->
+        <div id="view-timeline" class="view-layer hidden">
+            <div class="glass-panel w-full page-container">
+                <div class="page-header mb-xl">
+                    <h2 class="sora-font text-gradient"><i class="ri-bar-chart-box-line"></i> My Timeline</h2>
+                    <p class="text-muted">A detailed view of your emotional journey and stress levels.</p>
+                </div>
+                
+                <div class="metrics-grid mb-xl">
+                    <div class="metric-card glass-panel text-center">
+                        <div class="metric-label">Total Interactions</div>
+                        <div class="metric-value text-cyan" id="timeline-msgs">0</div>
+                    </div>
+                    <div class="metric-card glass-panel text-center">
+                        <div class="metric-label">Current Burnout Risk</div>
+                        <div class="metric-value text-violet" id="timeline-burnout">0%</div>
+                    </div>
+                </div>
+
+                <div class="chart-container-large glass-panel">
+                    <canvas id="largeMoodChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: REPORT -->
+        <div id="view-report" class="view-layer hidden">
+            <div class="glass-panel w-full page-container" style="max-width: 800px; margin: 0 auto;">
+                <div class="page-header mb-lg" style="text-align: center;">
+                    <h2 class="sora-font text-gradient"><i class="ri-file-list-3-line"></i> Daily Report</h2>
+                    <p class="text-muted" id="page-report-date"></p>
+                </div>
+                
+                <div id="page-report-content" class="report-body mt-lg mb-lg">
+                    <!-- JS fills this -->
+                </div>
+                
+                <div class="mt-lg flex-end">
+                    <button id="download-report-btn" class="btn btn-primary"><i class="ri-download-line"></i> Download PDF</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Session Report Modal -->
+    <div id="report-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel" style="max-width: 600px;">
+            <div class="report-header">
+                <h2 class="sora-font"><i class="ri-file-text-line text-cyan"></i> Wellness Report</h2>
+                <div class="report-date" id="report-date"></div>
+            </div>
+            <div class="report-body mt-lg" id="report-content">
+                <!-- Injected via JS -->
+            </div>
+            <div class="mt-xl flex-end">
+                <button id="close-report-btn" class="btn btn-outline mr-sm">Close</button>
+                <button id="copy-report-btn" class="btn btn-primary"><i class="ri-file-copy-line"></i> Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

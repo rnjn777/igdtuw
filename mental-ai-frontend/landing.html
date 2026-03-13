@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindSentry | Premium AI Wellness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --surface: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent-1: #00E5FF;
+            --accent-2: #8A2BE2;
+            --accent-3: #FF3366;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -10;
+            background-color: var(--bg);
+            overflow: hidden;
+        }
+
+        /* Grid overlay */
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(ellipse at center 40%, black 0%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center 40%, black 0%, transparent 80%);
+        }
+
+        /* Floating glowing orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.5;
+            animation: moveOrb 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .orb-1 { width: 600px; height: 600px; background: rgba(138, 43, 226, 0.4); top: -200px; left: -100px; }
+        .orb-2 { width: 500px; height: 500px; background: rgba(0, 229, 255, 0.3); bottom: -100px; right: -100px; animation-delay: -5s; }
+        .orb-3 { width: 400px; height: 400px; background: rgba(255, 51, 102, 0.2); top: 30%; left: 40%; animation-duration: 25s; }
+
+        @keyframes moveOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(100px, 150px) scale(1.2); }
+            66% { transform: translate(-50px, 100px) scale(0.9); }
+            100% { transform: translate(50px, -50px) scale(1.1); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        .logo i {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
+
+        /* Typography */
+        .text-gradient {
+            background: linear-gradient(to right, #fff, #94A3B8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-primary {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 5s ease infinite;
+        }
+        @keyframes gradientText { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* Hero */
+        .hero {
+            padding: 8rem 0 6rem 0;
+            text-align: center;
+            position: relative;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 30px;
+            color: var(--accent-1);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+            animation: float 4s ease-in-out infinite;
+        }
+        .hero-badge i { font-size: 1.1rem; }
+        
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 2rem;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        /* Premium Glowing Button */
+        .hero-btns {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-glow {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 1.1rem 2.8rem;
+            border-radius: 50px;
+            color: #fff;
+            background: #000;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        .btn-glow::before {
+            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%;
+            z-index: -1;
+            border-radius: 52px;
+            animation: glowingBorder 4s linear infinite;
+            transition: all 0.3s ease;
+        }
+        .btn-glow::after {
+            content: ''; position: absolute; inset: 1px;
+            background: #000;
+            border-radius: 50px;
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4);
+        }
+        .btn-glow:hover::before {
+            filter: blur(8px);
+            opacity: 0.8;
+        }
+        .btn-glow:hover::after {
+            background: rgba(0,0,0,0.7);
+        }
+        .btn-glow .icon {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        .btn-glow:hover .icon {
+            transform: translateX(5px);
+        }
+
+        @keyframes glowingBorder { 0% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } 100% { background-position: 0% 0%; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.1rem 2.5rem;
+            border-radius: 50px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-3px);
+        }
+
+        /* Moving Mouse Glow Cards (Bento style) */
+        .features-section {
+            padding: 6rem 0;
+            position: relative;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .section-header h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .bento-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        /* Magic hover effect for cards */
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.08), transparent 40%);
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .bento-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .bento-card:hover::before { opacity: 1; }
+        
+        .bento-content { position: relative; z-index: 1; }
+        .bento-icon {
+            width: 56px; height: 56px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .bento-card:hover .bento-icon { transform: scale(1.15) rotate(5deg); }
+        .bento-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.5px;}
+        .bento-card p { color: var(--text-muted); font-size: 1rem; line-height: 1.6; font-weight: 400;}
+
+        .icon-blue { color: var(--accent-1); box-shadow: 0 0 20px rgba(0,229,255,0.2); }
+        .icon-purple { color: var(--accent-2); box-shadow: 0 0 20px rgba(138,43,226,0.2); }
+        .icon-pink { color: var(--accent-3); box-shadow: 0 0 20px rgba(255,51,102,0.2); }
+
+        /* Dynamic AI Core Animation */
+        .ai-core-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 6rem 0;
+            padding: 5rem 4rem;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-core-container::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at right, rgba(138,43,226,0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .ai-core-container:hover { border-color: rgba(255,255,255,0.15); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .core-text { flex: 1; padding-right: 4rem; z-index: 1;}
+        .core-text h2 { font-size: 2.8rem; font-weight: 800; margin-bottom: 1.5rem; letter-spacing:-1px; line-height: 1.2;}
+        .core-text p { color: var(--text-muted); font-size: 1.15rem; line-height: 1.7; }
+        
+        .core-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 350px;
+        }
+        .pulse-ring {
+            position: absolute;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(0, 229, 255, 0.4);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulseRing 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        .pulse-ring:nth-child(2) { animation-delay: 1s; border-color: rgba(138,43,226,0.4); }
+        .pulse-ring:nth-child(3) { animation-delay: 2s; border-color: rgba(255,33,102,0.4); }
+        .core-center {
+            position: absolute;
+            width: 90px; height: 90px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 50px var(--accent-1), inset 0 0 20px #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: white;
+            z-index: 10;
+            animation: coreBreathe 4s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseRing {
+            0% { width: 90px; height: 90px; opacity: 1; }
+            100% { width: 500px; height: 500px; opacity: 0; }
+        }
+        @keyframes coreBreathe {
+            0% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 30px var(--accent-1); }
+            100% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 60px var(--accent-2); }
+        }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Footer */
+        footer { text-align: center; padding: 3rem 0; color: #64748B; border-top: 1px solid var(--border); margin-top: 4rem; font-size: 0.95rem; font-weight: 500;}
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .ai-core-container { flex-direction: column; text-align: center; padding: 3rem 2rem; }
+            .core-text { padding-right: 0; margin-bottom: 3rem; }
+            .hero h1 { font-size: 3.5rem; }
+            .hero-btns { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Animated Background -->
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="ri-brain-line"></i> MindSentry
+            </div>
+            <a href="index.html" class="nav-btn">Sign In</a>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero reveal active">
+            <div class="hero-badge">
+                <i class="ri-sparkling-fill"></i> System Online &bull; Version 2.0
+            </div>
+            <h1>The intelligent<br><span class="text-gradient">mental wellness</span> companion.</h1>
+            <p>Experience the next generation of emotional support. MindSentry uses advanced Emotion AI and generative models to understand how you feel and help you navigate it.</p>
+            
+            <div class="hero-btns">
+                <a href="index.html" class="btn-glow">
+                    <span>Try Now !</span> <i class="ri-arrow-right-line icon"></i>
+                </a>
+                <a href="#features" class="btn-outline">
+                    <i class="ri-play-circle-line"></i> See how it works
+                </a>
+            </div>
+        </section>
+
+        <!-- Intelligent Innovations (Bento Box Grid) -->
+        <section id="features" class="features-section reveal">
+            <div class="section-header">
+                <h2>Powered by <span class="text-gradient-primary">Deep Logic</span></h2>
+                <p style="color: var(--text-muted); font-size: 1.15rem;">A sophisticated AI architecture designed for your peace of mind.</p>
+            </div>
+            <div class="bento-grid">
+                <a href="index.html?prompt=stress" class="bento-card glow-cards">
+                    <div class="bento-content">
+                        <div class="bento-icon icon-blue"><i class="ri-pulse-line"></i></div>
+                        <h3>Emotion Discovery</h3>
+                        <p>Our proprietary NLP pipeline categorizes nuanced psychological states purely from your conversational inputs in real-time with high certainty.</p>
+                    </div>
+                </a>
+                <a href="index.html?prompt=talk" class="bento-card glow-cards">
+                    <div class="bento-content">
+                        <div class="bento-icon icon-purple"><i class="ri-line-chart-line"></i></div>
+                        <h3>Burnout Prediction</h3>
+                        <p>Algorithms analyze longitudinal data to map your stress trends, predicting academic burnout before it impacts your daily functioning.</p>
+                    </div>
+                </a>
+                <a href="index.html?prompt=relax" class="bento-card glow-cards">
+                    <div class="bento-content">
+                        <div class="bento-icon icon-pink"><i class="ri-leaf-line"></i></div>
+                        <h3>Generative Action</h3>
+                        <p>Beyond simple detection, MindSentry synthesizes empathetic, clinical-grade coping mechanisms tailored to your exact emotional state.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Animated AI Core Visualization -->
+        <section class="ai-core-container reveal">
+            <div class="core-text">
+                <h2>Real-time inference. <br><span class="text-gradient-primary">Zero latency empathy.</span></h2>
+                <p>MindSentry processes your thoughts securely, routing them through sentiment classifiers and generative models to provide instantaneous, meaningful support when you need it most. Beautifully intelligent, remarkably human.</p>
+            </div>
+            <div class="core-visual">
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="core-center">
+                    <i class="ri-brain-fill"></i>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 MindSentry. The future of AI-powered student wellness.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Magic Mouse Glow effect on Glass Bento cards
+        document.querySelectorAll('.glow-cards').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Scroll Reveal Animation Initialization
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+        
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('active'); // Trigger CSS animation
+                observer.unobserve(entry.target);     // Only animate once
+            });
+        }, revealOptions);
+
+        reveals.forEach(reveal => revealOnScroll.observe(reveal));
+    </script>
+</body>
+</html>
