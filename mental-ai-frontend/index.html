@@ -1,237 +1,583 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindSentry | AI Wellness Assistant</title>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
+    <title>MindSentry | Premium AI Wellness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #030712;
+            --surface: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent-1: #00E5FF;
+            --accent-2: #8A2BE2;
+            --accent-3: #FF3366;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+        }
 
-    <link rel="stylesheet" href="style.css">
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Dark Liquid Mesh Gradient Background */
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -10;
+            background-color: #03050a; /* Deep dark base */
+            overflow: hidden;
+        }
+
+        /* Ambient liquid orbs */
+        .orb {
+            position: absolute;
+            filter: blur(120px);
+            opacity: 0.9;
+            animation: liquidSwirl 25s infinite alternate ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+        
+        .orb-1 { width: 70vw; height: 70vw; background: #160a2b; top: -20vh; left: -10vw; animation-duration: 28s; }
+        .orb-2 { width: 60vw; height: 60vw; background: #001a33; bottom: -20vh; right: -10vw; animation-delay: -5s; animation-direction: alternate-reverse; }
+        .orb-3 { width: 80vw; height: 80vw; background: #2a0b23; top: 10vh; left: 15vw; animation-duration: 32s; }
+        .orb-4 { width: 50vw; height: 50vw; background: #002626; top: 30vh; right: 20vw; animation-duration: 24s; animation-delay: -12s; }
+
+        @keyframes liquidSwirl {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+            33% { transform: translate(10vw, 10vh) scale(1.1) rotate(90deg); border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; }
+            66% { transform: translate(-5vw, 15vh) scale(0.9) rotate(180deg); border-radius: 30% 70% 50% 50% / 60% 40% 70% 30%; }
+            100% { transform: translate(5vw, -10vh) scale(1.05) rotate(270deg); border-radius: 50% 50% 40% 60% / 40% 50% 50% 60%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Floating Glass Pill Header */
+        header {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            z-index: 1000;
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 20, 30, 0.4);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 0 10px rgba(255,255,255,0.02);
+            transition: all 0.3s ease;
+        }
+        header:hover {
+            background: rgba(15, 20, 30, 0.5);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        .logo i {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
+
+        /* Typography */
+        .text-gradient {
+            background: linear-gradient(to right, #fff, #94A3B8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-primary {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 5s ease infinite;
+        }
+        @keyframes gradientText { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* Hero */
+        .hero {
+            padding: 8rem 0 6rem 0;
+            text-align: center;
+            position: relative;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 30px;
+            color: var(--accent-1);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+            animation: float 4s ease-in-out infinite;
+        }
+        .hero-badge i { font-size: 1.1rem; }
+        
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 2rem;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        /* Premium Glowing Button */
+        .hero-btns {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-glow {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 1.1rem 2.8rem;
+            border-radius: 50px;
+            color: #fff;
+            background: #000;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        .btn-glow::before {
+            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%;
+            z-index: -1;
+            border-radius: 52px;
+            animation: glowingBorder 4s linear infinite;
+            transition: all 0.3s ease;
+        }
+        .btn-glow::after {
+            content: ''; position: absolute; inset: 1px;
+            background: #000;
+            border-radius: 50px;
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4);
+        }
+        .btn-glow:hover::before {
+            filter: blur(8px);
+            opacity: 0.8;
+        }
+        .btn-glow:hover::after {
+            background: rgba(0,0,0,0.7);
+        }
+        .btn-glow .icon {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        .btn-glow:hover .icon {
+            transform: translateX(5px);
+        }
+
+        @keyframes glowingBorder { 0% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } 100% { background-position: 0% 0%; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.1rem 2.5rem;
+            border-radius: 50px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-3px);
+        }
+
+        /* 3D Glass Mockup */
+        .hero-mockup-wrapper { margin-top: 5rem; perspective: 1200px; display: flex; justify-content: center; }
+        .mockup-glass {
+            width: 100%; max-width: 800px;
+            background: rgba(20, 25, 35, 0.4);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(0,229,255,0.1);
+            transform: rotateX(10deg) rotateY(0deg) translateZ(0);
+            transition: transform 0.1s ease-out; overflow: hidden; text-align: left;
+        }
+        .mockup-header { padding: 1rem 1.5rem; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; }
+        .mockup-dots { display: flex; gap: 0.4rem; margin-right: 1.5rem; }
+        .mockup-dots .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.red { background: #FF5F56; } .dot.yellow { background: #FFBD2E; } .dot.green { background: #27C93F; }
+        .mockup-title { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
+        .mockup-body { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+        .mockup-msg { padding: 1.2rem; border-radius: 12px; font-size: 0.95rem; line-height: 1.6; max-width: 80%; }
+        .mockup-msg.user { background: rgba(255,255,255,0.05); align-self: flex-end; border-top-right-radius: 4px; border: 1px solid rgba(255,255,255,0.05);}
+        .mockup-msg.ai { background: rgba(0, 229, 255, 0.05); border-left: 2px solid var(--accent-1); align-self: flex-start; border-top-left-radius: 4px; color: #fff;}
+        .mockup-footer { padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); }
+        .mockup-stat { color: var(--accent-3); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;}
+        .mockup-pill { background: rgba(0,229,255,0.1); color: var(--accent-1); padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; display: flex; align-items:center; gap:0.4rem;}
+
+        /* Moving Mouse Glow Cards (Bento style) */
+        .features-section {
+            padding: 6rem 0;
+            position: relative;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .section-header h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .bento-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        /* Magic hover effect for cards */
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.08), transparent 40%);
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .bento-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .bento-card:hover::before { opacity: 1; }
+        
+        .bento-content { position: relative; z-index: 1; }
+        .bento-icon {
+            width: 56px; height: 56px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .bento-card:hover .bento-icon { transform: scale(1.15) rotate(5deg); }
+        .bento-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.5px;}
+        .bento-card p { color: var(--text-muted); font-size: 1rem; line-height: 1.6; font-weight: 400;}
+
+        .icon-blue { color: var(--accent-1); box-shadow: 0 0 20px rgba(0,229,255,0.2); }
+        .icon-purple { color: var(--accent-2); box-shadow: 0 0 20px rgba(138,43,226,0.2); }
+        .icon-pink { color: var(--accent-3); box-shadow: 0 0 20px rgba(255,51,102,0.2); }
+
+        /* Dynamic AI Core Animation */
+        .ai-core-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 6rem 0;
+            padding: 5rem 4rem;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-core-container::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at right, rgba(138,43,226,0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .ai-core-container:hover { border-color: rgba(255,255,255,0.15); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .core-text { flex: 1; padding-right: 4rem; z-index: 1;}
+        .core-text h2 { font-size: 2.8rem; font-weight: 800; margin-bottom: 1.5rem; letter-spacing:-1px; line-height: 1.2;}
+        .core-text p { color: var(--text-muted); font-size: 1.15rem; line-height: 1.7; }
+        
+        .core-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 350px;
+        }
+        .pulse-ring {
+            position: absolute;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(0, 229, 255, 0.4);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulseRing 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        .pulse-ring:nth-child(2) { animation-delay: 1s; border-color: rgba(138,43,226,0.4); }
+        .pulse-ring:nth-child(3) { animation-delay: 2s; border-color: rgba(255,33,102,0.4); }
+        .core-center {
+            position: absolute;
+            width: 90px; height: 90px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 50px var(--accent-1), inset 0 0 20px #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: white;
+            z-index: 10;
+            animation: coreBreathe 4s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseRing {
+            0% { width: 90px; height: 90px; opacity: 1; }
+            100% { width: 500px; height: 500px; opacity: 0; }
+        }
+        @keyframes coreBreathe {
+            0% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 30px var(--accent-1); }
+            100% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 60px var(--accent-2); }
+        }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Footer */
+        footer { text-align: center; padding: 3rem 0; color: #64748B; border-top: 1px solid var(--border); margin-top: 4rem; font-size: 0.95rem; font-weight: 500;}
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .ai-core-container { flex-direction: column; text-align: center; padding: 3rem 2rem; }
+            .core-text { padding-right: 0; margin-bottom: 3rem; }
+            .hero h1 { font-size: 3.5rem; }
+            .hero-btns { flex-direction: column; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Ambient Animated Background from Landing Page -->
+
+    <!-- Ambient Animated Background -->
     <div class="ambient-bg">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
-        <div class="grid-overlay"></div>
+        <div class="orb orb-4"></div>
     </div>
 
-    <!-- Onboarding Modal -->
-    <div id="onboarding" class="modal-overlay active">
-        <div class="modal-content glass-panel glow-cyan">
-            <div class="orb-container small">
-                <div class="orb orb-calm"></div>
-            </div>
-            <h1 class="sora-font text-gradient">Hi, I'm MindSentry.</h1>
-            <p class="text-muted">Your personal AI mental wellness assistant.</p>
-            
-            <div class="input-group mt-xl">
-                <label for="user-name">What should I call you?</label>
-                <input type="text" id="user-name" placeholder="Enter your name..." autocomplete="off">
-            </div>
-            
-            <button id="start-btn" class="btn btn-primary mt-lg" disabled>Begin Session <i class="ri-arrow-right-line"></i></button>
+    <!-- Header out of container for fixed centering -->
+    <header>
+        <div class="logo">
+            <i class="ri-brain-line"></i> MindSentry
         </div>
+        <a href="app.html" class="nav-btn">Sign In</a>
+    </header>
+
+    <div class="container" style="padding-top: 6rem;">
+
+        <!-- Hero Section -->
+        <section class="hero reveal active">
+            <h1><span class="text-gradient">MindSentry</span></h1>
+            <p>The intelligent mental wellness companion. Experience the next generation of emotional support. Our platform uses advanced Emotion AI and generative models to understand how you feel and help you navigate it.</p>
+            
+            <div class="hero-btns">
+                <a href="app.html" class="btn-glow">
+                    <span>Try Now !</span> <i class="ri-arrow-right-line icon"></i>
+                </a>
+                <a href="#features" class="btn-outline">
+                    <i class="ri-play-circle-line"></i> See how it works
+                </a>
+            </div>
+
+            <div class="hero-mockup-wrapper">
+                <div class="mockup-glass" id="mockup3d">
+                    <div class="mockup-header">
+                       <div class="mockup-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+                       <div class="mockup-title">MindSentry Active Session</div>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="mockup-msg user">I'm incredibly overwhelmed with my course load right now. I just don't know where to start.</div>
+                        <div class="mockup-msg ai">I hear you. It's completely normal to feel paralyzed when the workload is heavy. Let's break this down into manageable steps together. First, take a slow, deep breath.</div>
+                    </div>
+                    <div class="mockup-footer">
+                        <div class="mockup-stat">High Stress Detected</div>
+                        <div class="mockup-pill"><i class="ri-pulse-line"></i> Grounding Required</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Intelligent Innovations (Bento Box Grid) -->
+        <section id="features" class="features-section reveal">
+            <div class="section-header">
+                <h2>Powered by <span class="text-gradient-primary">Deep Logic</span></h2>
+                <p style="color: var(--text-muted); font-size: 1.15rem;">A sophisticated AI architecture designed for your peace of mind.</p>
+            </div>
+            <div class="bento-grid">
+                <a href="app.html?prompt=stress" class="bento-card glow-cards">
+                    <div class="bento-content">
+                        <div class="bento-icon icon-blue"><i class="ri-pulse-line"></i></div>
+                        <h3>Emotion Discovery</h3>
+                        <p>Our proprietary NLP pipeline categorizes nuanced psychological states purely from your conversational inputs in real-time with high certainty.</p>
+                    </div>
+                </a>
+                <a href="app.html?prompt=talk" class="bento-card glow-cards">
+                    <div class="bento-content">
+                        <div class="bento-icon icon-purple"><i class="ri-line-chart-line"></i></div>
+                        <h3>Burnout Prediction</h3>
+                        <p>Algorithms analyze longitudinal data to map your stress trends, predicting academic burnout before it impacts your daily functioning.</p>
+                    </div>
+                </a>
+                <a href="app.html?prompt=relax" class="bento-card glow-cards">
+                    <div class="bento-content">
+                        <div class="bento-icon icon-pink"><i class="ri-leaf-line"></i></div>
+                        <h3>Generative Action</h3>
+                        <p>Beyond simple detection, MindSentry synthesizes empathetic, clinical-grade coping mechanisms tailored to your exact emotional state.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Animated AI Core Visualization -->
+        <section class="ai-core-container reveal">
+            <div class="core-text">
+                <h2>Real-time inference. <br><span class="text-gradient-primary">Zero latency empathy.</span></h2>
+                <p>MindSentry processes your thoughts securely, routing them through sentiment classifiers and generative models to provide instantaneous, meaningful support when you need it most. Beautifully intelligent, remarkably human.</p>
+            </div>
+            <div class="core-visual">
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="core-center">
+                    <i class="ri-brain-fill"></i>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 MindSentry. The future of AI-powered student wellness.</p>
+        </footer>
     </div>
 
-    <!-- Main Application -->
-    <div id="app" class="app-layout hidden">
+    <script>
+        // Magic Mouse Glow effect on Glass Bento cards
+        document.querySelectorAll('.glow-cards').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Scroll Reveal Animation Initialization
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
         
-        <!-- Left Sidebar -->
-        <aside class="sidebar glass-panel">
-            <div class="brand">
-                <i class="ri-brain-line glow-icon"></i>
-                <span class="sora-font font-bold">MindSentry</span>
-            </div>
-            
-            <nav class="nav-menu">
-                <a href="#" class="nav-item active" data-view="chat"><i class="ri-chat-3-line"></i> Active Session</a>
-                <a href="#" class="nav-item" data-view="timeline"><i class="ri-bar-chart-box-line"></i> My Timeline</a>
-                <a href="#" class="nav-item" data-view="report"><i class="ri-file-list-3-line"></i> Daily Report</a>
-                <div class="nav-item user-profile mt-auto">
-                    <div class="avatar"><i class="ri-user-smile-line"></i></div>
-                    <span id="display-name">Student</span>
-                </div>
-            </nav>
-        </aside>
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('active'); // Trigger CSS animation
+                observer.unobserve(entry.target);     // Only animate once
+            });
+        }, revealOptions);
 
-        <!-- VIEW: CHAT -->
-        <div id="view-chat" class="view-layer" style="display: contents;">
-            <!-- Main Chat Area -->
-        <main class="chat-container">
-            <!-- Crisis Banner (Hidden Default) -->
-            <div id="crisis-banner" class="crisis-banner hidden">
-                <i class="ri-alert-fill"></i>
-                <div class="crisis-text">
-                    <strong>You are not alone.</strong> If you're feeling overwhelmed, please reach out. 
-                    <br>Helpline: <strong>9152987821</strong> (iCall) | <strong>1860-2662-345</strong> (Vandrevala)
-                </div>
-                <button id="close-crisis" class="btn-icon"><i class="ri-close-line"></i></button>
-            </div>
-
-            <div class="chat-scroll" id="chat-box">
-                <!-- Hero Section (Replaced by chat history) -->
-                <div id="hero-section" class="hero-section">
-                    <div class="orb-container large">
-                        <div id="main-orb" class="orb orb-calm pulse-anim"></div>
-                    </div>
-                    <h2 class="sora-font text-gradient mb-sm">Welcome back, <span id="hero-name">Student</span>.</h2>
-                    <p class="text-muted mb-xl">How are you feeling about your studies today?</p>
-                    
-                    <div class="prompt-grid">
-                        <button class="prompt-card glass-panel" data-prompt="I'm feeling incredibly anxious about my exams.">
-                            <span class="prompt-icon purple"><i class="ri-windy-line"></i></span>
-                            <div class="prompt-text">
-                                <strong>I'm feeling anxious</strong>
-                                <span>Grounding techniques</span>
-                            </div>
-                        </button>
-                        <button class="prompt-card glass-panel" data-prompt="I am completely exhausted and burnt out.">
-                            <span class="prompt-icon blue"><i class="ri-battery-low-line"></i></span>
-                            <div class="prompt-text">
-                                <strong>I'm burnt out</strong>
-                                <span>Rest & recovery</span>
-                            </div>
-                        </button>
-                        <button class="prompt-card glass-panel" data-prompt="I had a surprisingly great day today.">
-                            <span class="prompt-icon gold"><i class="ri-sun-line"></i></span>
-                            <div class="prompt-text">
-                                <strong>I feel great!</strong>
-                                <span>Track positive moments</span>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chat Input -->
-            <div class="chat-input-wrapper glass-panel">
-                <input type="text" id="chat-input" placeholder="What's on your mind? Type here..." autocomplete="off">
-                <button id="send-btn" class="btn-icon send-button"><i class="ri-send-plane-fill"></i></button>
-            </div>
-        </main>
-
-        <!-- Right Analytics Panel -->
-        <aside class="analytics-panel">
-            <h3 class="panel-title sora-font"><i class="ri-dashboard-line"></i> Mental Insight</h3>
-            
-            <!-- Emotion Metric -->
-            <div class="metric-card glass-panel mb-md glow-border">
-                <div class="metric-label">Detected Emotion</div>
-                <div class="metric-value-row">
-                    <div class="metric-value font-bold text-cyan" id="insight-emotion">Reflective</div>
-                    <div class="confidence-badge" id="insight-conf">85%</div>
-                </div>
-                <!-- Mini visualization -->
-                <div class="emotion-bar-container mt-sm">
-                    <div id="emotion-bar" class="emotion-bar bar-cyan" style="width: 85%"></div>
-                </div>
-            </div>
-
-            <!-- Split Metrics -->
-            <div class="split-metrics mb-md">
-                <div class="metric-card glass-panel">
-                    <div class="metric-label">Burnout Risk</div>
-                    <div class="metric-value" id="insight-burnout">Low</div>
-                    <div class="metric-trend trend-good" id="insight-burnout-trend"><i class="ri-arrow-right-down-line"></i> Stable</div>
-                </div>
-                <div class="metric-card glass-panel">
-                    <div class="metric-label">Stress Trend</div>
-                    <div class="metric-value" id="insight-stress">Calm</div>
-                    <div class="metric-trend trend-good" id="insight-stress-trend"><i class="ri-arrow-right-line"></i> Stable</div>
-                </div>
-            </div>
-
-            <!-- Suggested Action -->
-            <div class="action-card glass-panel mb-xl accent-left">
-                <div class="metric-label text-violet"><i class="ri-lightbulb-flash-line"></i> Suggested Activity</div>
-                <div class="action-text mt-xs" id="insight-activity">Maintain your healthy routine and take scheduled study breaks.</div>
-            </div>
-
-            <!-- Mood Timeline Chart -->
-            <h3 class="panel-title sora-font"><i class="ri-line-chart-line"></i> Mood Timeline</h3>
-            <div class="chart-container glass-panel">
-                <canvas id="moodChart"></canvas>
-            </div>
-             <div class="mt-xl">
-                 <button id="generate-report-btn" class="btn btn-outline w-full"><i class="ri-file-download-line"></i> Generate Session Report</button>
-            </div>
-        </aside>
-        </div>
-
-        <!-- VIEW: TIMELINE -->
-        <div id="view-timeline" class="view-layer hidden">
-            <div class="glass-panel w-full page-container">
-                <div class="page-header mb-xl">
-                    <h2 class="sora-font text-gradient"><i class="ri-bar-chart-box-line"></i> My Timeline</h2>
-                    <p class="text-muted">A detailed view of your emotional journey and stress levels.</p>
-                </div>
-                
-                <div class="metrics-grid mb-xl">
-                    <div class="metric-card glass-panel text-center">
-                        <div class="metric-label">Total Interactions</div>
-                        <div class="metric-value text-cyan" id="timeline-msgs">0</div>
-                    </div>
-                    <div class="metric-card glass-panel text-center">
-                        <div class="metric-label">Current Burnout Risk</div>
-                        <div class="metric-value text-violet" id="timeline-burnout">0%</div>
-                    </div>
-                </div>
-
-                <div class="chart-container-large glass-panel">
-                    <canvas id="largeMoodChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW: REPORT -->
-        <div id="view-report" class="view-layer hidden">
-            <div class="glass-panel w-full page-container" style="max-width: 800px; margin: 0 auto;">
-                <div class="page-header mb-lg" style="text-align: center;">
-                    <h2 class="sora-font text-gradient"><i class="ri-file-list-3-line"></i> Daily Report</h2>
-                    <p class="text-muted" id="page-report-date"></p>
-                </div>
-                
-                <div id="page-report-content" class="report-body mt-lg mb-lg">
-                    <!-- JS fills this -->
-                </div>
-                
-                <div class="mt-lg flex-end">
-                    <button id="download-report-btn" class="btn btn-primary"><i class="ri-download-line"></i> Download PDF</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Session Report Modal -->
-    <div id="report-modal" class="modal-overlay hidden">
-        <div class="modal-content glass-panel" style="max-width: 600px;">
-            <div class="report-header">
-                <h2 class="sora-font"><i class="ri-file-text-line text-cyan"></i> Wellness Report</h2>
-                <div class="report-date" id="report-date"></div>
-            </div>
-            <div class="report-body mt-lg" id="report-content">
-                <!-- Injected via JS -->
-            </div>
-            <div class="mt-xl flex-end">
-                <button id="close-report-btn" class="btn btn-outline mr-sm">Close</button>
-                <button id="copy-report-btn" class="btn btn-primary"><i class="ri-file-copy-line"></i> Copy to Clipboard</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
+        reveals.forEach(reveal => revealOnScroll.observe(reveal));
+        
+        // 3D Mockup Tilt
+        const mockup = document.getElementById('mockup3d');
+        if (mockup) {
+            document.addEventListener('mousemove', (e) => {
+                const x = (window.innerWidth / 2 - e.pageX) / 50;
+                const y = (window.innerHeight / 2 - e.pageY) / 50;
+                mockup.style.transform = `rotateY(${x}deg) rotateX(${y + 10}deg)`;
+            });
+        }
+    </script>
 </body>
 </html>
